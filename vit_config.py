@@ -30,12 +30,10 @@ class Args:
     layers = 6
     heads = 8
 
-    # Save your model as "vit-cifar10-{YOUR_CCID}"
-    YOUR_CCID = "asunil"
-    name = f"vit-cifar10-{YOUR_CCID}"
+
 
 class PatchEmbeddings(nn.Module):
-    """TODO: (0.5 out of 10) Compute patch embedding
+    """TODO: Compute patch embedding
     of shape `(batch_size, seq_length, hidden_size)`.
     """
     def __init__(
@@ -47,7 +45,7 @@ class PatchEmbeddings(nn.Module):
         ):
         super().__init__()
         # #########################
-        # Finish Your Code HERE
+        # 
         # #########################
 
         #Number of patches first:
@@ -68,7 +66,7 @@ class PatchEmbeddings(nn.Module):
         x: torch.Tensor,
         ) -> torch.Tensor:
         # #########################
-        # Finish Your Code HERE
+        # 
         # #########################
 
         x = self.projection(x)
@@ -86,12 +84,12 @@ class PositionEmbedding(nn.Module):
         num_patches: int,
         hidden_size: int,
         ):
-        """TODO: (0.5 out of 10) Given patch embeddings, 
+        """ Given patch embeddings, 
         calculate position embeddings with [CLS] and [POS].
         """
         super().__init__()
         # #########################
-        # Finish Your Code HERE
+        # 
         # #########################
 
         self.cls_token = nn.Parameter(torch.zeros(1,1 , hidden_size)) #(batch_size, CLS token, size of feature_vector)
@@ -104,7 +102,7 @@ class PositionEmbedding(nn.Module):
         embeddings: torch.Tensor
         ) -> torch.Tensor:
         # #########################
-        # Finish Your Code HERE
+        # 
         # #########################
 
         batch_size = embeddings.size(0)
@@ -121,12 +119,12 @@ class PositionEmbedding(nn.Module):
 
 
 class TransformerEncoderBlock(nn.Module):
-    """TODO: (0.5 out of 10) A residual Transformer encoder block.
+    """TODO: A residual Transformer encoder block.
     """
     def __init__(self, d_model: int, n_head: int):
         super().__init__()
         # #########################
-        # Finish Your Code HERE
+        # 
         # #########################
 
         self.attn = nn.MultiheadAttention(embed_dim=d_model, num_heads=n_head)
@@ -143,7 +141,7 @@ class TransformerEncoderBlock(nn.Module):
 
     def forward(self, x: torch.Tensor):
         # #########################
-        # Finish Your Code HERE
+        #
         # #########################
         attn_output, attn_weights = self.attn(x, x, x)
         x = x + attn_output
@@ -160,7 +158,7 @@ class TransformerEncoderBlock(nn.Module):
 
 
 class ViT(nn.Module):
-    """TODO: (0.5 out of 10) Vision Transformer.
+    """TODO:  Vision Transformer.
     """
     def __init__(
         self, 
@@ -175,7 +173,7 @@ class ViT(nn.Module):
         super().__init__()
         self.hidden_size = hidden_size
         # #########################
-        # Finish Your Code HERE
+        # 
         # #########################
         self.patch_embed = PatchEmbeddings(input_resolution, patch_size, hidden_size, in_channels)
 
@@ -196,7 +194,7 @@ class ViT(nn.Module):
 
     def forward(self, x: torch.Tensor):
         # #########################
-        # Finish Your Code HERE
+        # 
         # #########################
 
         #first we make patch embeddings
@@ -230,12 +228,12 @@ def transform(
     mean: Tuple[float] = (0.5, 0.5, 0.5),   # NOTE: Modify this as you see fit
     std: Tuple[float] = (0.5, 0.5, 0.5),    # NOTE: Modify this as you see fit
     ):
-    """TODO: (0.25 out of 10) Preprocess the image inputs
+    """TODO: Preprocess the image inputs
     with at least 3 data augmentation for training.
     """
     if mode == "train":
         # #########################
-        # Finish Your Code HERE
+        #
         # #########################
         tfm = transforms.Compose([
             transforms.RandomResizedCrop(input_resolution), #Augment 1
@@ -248,7 +246,7 @@ def transform(
 
     else:
         # #########################
-        # Finish Your Code HERE
+        # 
         # #########################
         # Preprocessing for validation/test
         tfm = transforms.Compose([
@@ -270,7 +268,7 @@ def inverse_transform(
     convert the tensor back to a numpy image.
     """
     # #########################
-    # Finish Your Code HERE
+    # 
     # #########################
     inv_normalize = transforms.Normalize(mean=mean, std=std)
     img_tensor = inv_normalize(img_tensor).permute(1, 2, 0)
@@ -280,10 +278,10 @@ def inverse_transform(
 
 
 def train_vit_model(args):
-    """TODO: (0.25 out of 10) Train loop for ViT model.
+    """TODO:Train loop for ViT model.
     """
     # #########################
-    # Finish Your Code HERE
+    # 
     # #########################
     # -----
     # Dataset for train / test
@@ -336,7 +334,7 @@ def train_vit_model(args):
         for i, (x, labels) in enumerate(pbar):
             model.train()
             # #########################
-            # Finish Your Code HERE
+            # 
             # #########################
             optimizer.zero_grad()
             if torch.cuda.is_available():
@@ -353,14 +351,14 @@ def train_vit_model(args):
             # #########################
 
             # NOTE: Show train loss at the end of epoch
-            # Feel free to modify this to log more steps
+           
             pbar.set_postfix({'loss': '{:.4f}'.format(loss.item())})
 
         scheduler.step() #Take a step on LR adjustment.
         # Evaluate at the end
         test_acc = test_classification_model(model, test_loader)
 
-        # NOTE: DO NOT CHANGE
+      
         # Save the model
         if test_acc > best_acc:
             best_acc = test_acc
